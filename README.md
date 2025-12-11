@@ -60,13 +60,14 @@ streamlit run landslide_risk_app.py
 
 4. Visualisasi Heatmap: Menggunakan matplotlib untuk membuat visualisasi heatmap dari peta risiko longsor.
 
-Struktur Proyek
-landslide_risk_app.py        # File utama aplikasi
-README.md                   # Dokumentasi
-requirements.txt            # Daftar dependensi
-
+# Struktur Proyek     
+## File utama aplikasi
+landslide_risk_app.py           
+## Dokumentasi
+README.md  
+## Daftar dependensi
+requirements.txt 
 # Pengembangan Lanjutan
-
 1. Integrasi lebih banyak data: Menggabungkan lebih banyak faktor risiko seperti penggunaan lahan atau vegetasi.
 
 2. Peningkatan visualisasi: Menambahkan lebih banyak opsi visualisasi seperti peta interaktif.
