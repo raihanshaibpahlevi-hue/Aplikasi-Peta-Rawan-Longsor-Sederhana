@@ -1,61 +1,72 @@
-# Library imports
-import streamlit as st
-import rasterio
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+# Aplikasi Peta Rawan Longsor Sederhana
+#Deskripsi
+Aplikasi ini dirancang untuk menganalisis peta kawasan rawan longsor berdasarkan data Elevasi Digital Model (DEM) dan curah hujan. Aplikasi ini menghitung risiko longsor dengan memadukan dua faktor penting: kemiringan (slope) dan curah hujan. Hasilnya berupa peta risiko yang ditampilkan dalam bentuk heatmap.
+# Fitur Utama
 
-# Tittle 
-st.title("Aplikasi Peta Rawan Longsor Sederhana")
+1. Upload File DEM (TIFF): Model Elevasi Digital untuk memetakan kondisi topografi area.
 
-st.write("Upload file DEM (.tif) dan Data Curah Hujan (CSV atau TIFF)")
+2. Upload Data Curah Hujan (CSV atau TIFF): Data curah hujan untuk menggambarkan intensitas curah hujan yang mempengaruhi risiko longsor.
 
-# Upload DEM
-dem_file = st.file_uploader("Upload DEM (TIFF)", type=["tif", "tiff"])
+3. Hitung Risiko Longsor: Menghitung risiko longsor berdasarkan kemiringan dan curah hujan, dan menghasilkan peta heatmap.
 
-# Upload Rainfall
-rain_file = st.file_uploader("Upload Curah Hujan (CSV atau TIFF)", type=["csv", "tif", "tiff"])
+4. Visualisasi Heatmap: Peta risiko longsor yang dapat dilihat dalam bentuk heatmap.
 
-if dem_file and rain_file:
-    st.success("File berhasil diupload!")
+# Cara Penggunaan
 
-    # ========== BACA DEM ==========
-    with rasterio.open(dem_file) as dem_src:
-        dem = dem_src.read(1).astype(float)
+1. Upload File DEM:
 
-    # Hitung slope sederhana
-    # (selisih elevasi antar piksel)
-    gy, gx = np.gradient(dem)
-    slope = np.sqrt(gx**2 + gy**2)
+Format yang didukung: .tif atau .tiff.
 
-    # Normalisasi slope
-    slope_norm = (slope - slope.min()) / (slope.max() - slope.min())
+File DEM digunakan untuk menghitung kemiringan atau slope dari wilayah yang dianalisis.
 
-    # ========== BACA CURAH HUJAN ==========
-    if rain_file.name.endswith(".csv"):
-        rain_df = pd.read_csv(rain_file)
-        # Ambil nilai rata-rata curah hujan (sederhana)
-        rainfall_value = rain_df.iloc[:, 1].mean()
-        # Buat raster curah hujan sebagai array dengan nilai rata-rata
-        rainfall = np.full(dem.shape, rainfall_value)
+2 Upload Data Curah Hujan:
 
-    else:
-        with rasterio.open(rain_file) as rain_src:
-            rainfall = rain_src.read(1).astype(float)
+Format yang didukung: .csv, .tif, atau .tiff.
 
-    # Normalisasi curah hujan
-    rain_norm = (rainfall - rainfall.min()) / (rainfall.max() - rainfall.min())
+Jika menggunakan file .csv, aplikasi akan menghitung nilai rata-rata curah hujan dan menggunakannya sebagai data curah hujan untuk seluruh area.
 
-    # ========== HITUNG RISIKO ==========
-    risk_map = slope_norm + rain_norm
+Jika menggunakan file .tif untuk curah hujan, maka data tersebut akan dibaca langsung sebagai data curah hujan spasial.
 
-    # Normalisasi risiko
-    risk_map_norm = (risk_map - risk_map.min()) / (risk_map.max() - risk_map.min())
+# Hasil Analisis:
 
-    # ========== TAMPILKAN HEATMAP ==========
-    st.subheader("Peta Heatmap Kawasan Longsor")
+Setelah kedua file diupload, aplikasi akan menghitung risiko longsor berdasarkan kemiringan dan curah hujan yang ada.
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    heat = ax.imshow(risk_map_norm, cmap="hot")   # heatmap
-    plt.colorbar(heat, ax=ax)
-    st.pyplot(fig)
+Hasilnya akan ditampilkan dalam bentuk heatmap dengan rentang warna yang menggambarkan tingkat risiko.
+
+# Instalasi
+
+Untuk menjalankan aplikasi ini, Anda memerlukan Python 3.10.10 dan beberapa library yang diperlukan. Berikut adalah langkah-langkah instalasinya:
+
+Instalasi dependensi : menggunakan terminal di visual code
+
+pip install streamlit rasterio numpy pandas matplotlib
+
+
+# Menjalankan aplikasi:
+1. Simpan file Python yang berisi kode ini dalam file landslide_risk_app.py dan jalankan aplikasi dengan perintah:
+
+streamlit run landslide_risk_app.py
+
+
+2. Aplikasi akan terbuka di browser, dan Anda bisa meng-upload file DEM dan Curah Hujan untuk mendapatkan peta risiko longsor.
+
+# Penjelasan Kode
+
+1. Bagian Pembacaan File DEM: Menggunakan rasterio untuk membaca file DEM dalam format .tif. Kemudian, slope dihitung dengan menggunakan perbedaan elevasi antar piksel.
+
+2. Bagian Pembacaan Data Curah Hujan: File CSV atau TIFF dibaca menggunakan pandas untuk CSV dan rasterio untuk file TIFF. Nilai curah hujan dihitung dan normalisasi dilakukan untuk perbandingan.
+
+3. Perhitungan Risiko Longsor: Risiko dihitung dengan menjumlahkan nilai normalisasi slope dan curah hujan, kemudian menghasilkan peta risiko yang dinormalisasi.
+
+4. Visualisasi Heatmap: Menggunakan matplotlib untuk membuat visualisasi heatmap dari peta risiko longsor.
+
+Struktur Proyek
+landslide_risk_app.py        # File utama aplikasi
+README.md                   # Dokumentasi
+requirements.txt            # Daftar dependensi
+
+# Pengembangan Lanjutan
+
+1. Integrasi lebih banyak data: Menggabungkan lebih banyak faktor risiko seperti penggunaan lahan atau vegetasi.
+
+2. Peningkatan visualisasi: Menambahkan lebih banyak opsi visualisasi seperti peta interaktif.
