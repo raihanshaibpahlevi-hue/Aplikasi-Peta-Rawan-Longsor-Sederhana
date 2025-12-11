@@ -4,7 +4,8 @@ import rasterio
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-# tambahan library jika diperlukan
+
+# Tittle 
 st.title("Aplikasi Peta Rawan Longsor Sederhana")
 
 st.write("Upload file DEM (.tif) dan Data Curah Hujan (CSV atau TIFF)")
